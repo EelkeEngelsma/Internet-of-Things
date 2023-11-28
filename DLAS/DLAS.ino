@@ -99,6 +99,7 @@ void loop() {
   } else {
     for (int i = 0; i < NUM_LEDS; i++) {
       digitalWrite(ledPins[i], LOW);
-    }
+      delay(500);
+        }
   }
 }
