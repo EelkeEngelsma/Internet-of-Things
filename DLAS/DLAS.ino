@@ -1,7 +1,12 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
+#include <WiFiS3.h>
+#include "env.h"
+#include <ArduinoMqttClient.h>
 
 #define NUM_LEDS 6
+WiFiClient wifi;
+MqttClient mqttClient(wifi);
 
 const int ledPins[NUM_LEDS] = {2, 3, 4, 5, 6, 7};
 #define ECHOPIN 11
@@ -14,6 +19,22 @@ void setup() {
 
   for (int i = 0; i < NUM_LEDS; i++) {
     pinMode(ledPins[i], OUTPUT);
+  }
+
+  while (WiFi.begin(ssid, password) != WL_CONNECTED)
+  {
+    delay(5000);
+  }
+
+  mqttClient.setUsernamePassword(MQTTUsername, MQTTPassword);
+
+
+  bool MQTTconnected = false;
+  while (!MQTTconnected) {
+    if (!mqttClient.connect(MQTTURL, MQTTPort))
+      delay(1000);
+    else
+      MQTTconnected = true;
   }
 
   pinMode(ECHOPIN, INPUT);
