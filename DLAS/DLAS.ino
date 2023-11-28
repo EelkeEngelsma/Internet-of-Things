@@ -63,7 +63,8 @@ void loop() {
   digitalWrite(TRIGPIN, HIGH);
   delayMicroseconds(10);
   digitalWrite(TRIGPIN, LOW);
-  float distance = pulseIn(ECHOPIN, HIGH) / 58.0;
+  int distance = round(pulseIn(ECHOPIN, HIGH) / 58.0);
+  
 
   mqttClient.beginMessage("eelke/altitude",true,0); // naam van de data, retention flag true geeft aan dat hij de laatste waarde onthoud, zekerheid van aankomen data
   mqttClient.print(distance); // versturen van ontvangen data
@@ -71,11 +72,11 @@ void loop() {
 
   Serial.println(distance);
 
+  lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Altitude:");
   lcd.setCursor(0, 1);
   lcd.print(distance);
-  delay(200);
 
   if (distance < 50) {
     for (int i = 0; i < NUM_LEDS; i++) {
