@@ -5,8 +5,8 @@
 #include <ArduinoMqttClient.h>
 
 #define NUM_LEDS 6
-WiFiClient wifi;
-MqttClient mqttClient(wifi);
+WiFiClient wifi; // wifi aanmaken
+MqttClient mqttClient(wifi); // initializatie van de mqtt client
 
 const int ledPins[NUM_LEDS] = {2, 3, 4, 5, 6, 7};
 #define ECHOPIN 11
@@ -21,15 +21,15 @@ void setup() {
     pinMode(ledPins[i], OUTPUT);
   }
 
-  while (WiFi.begin(ssid, password) != WL_CONNECTED)
+  while (WiFi.begin(ssid, password) != WL_CONNECTED) // wifi ssid en wachtwoord ingeven verbinden met wifi
   {
     delay(5000);
   }
 
-  mqttClient.setUsernamePassword(MQTTUsername, MQTTPassword);
+  mqttClient.setUsernamePassword(MQTTUsername, MQTTPassword); // mqtt wachtwoord en username geven
 
 
-  bool MQTTconnected = false;
+  bool MQTTconnected = false; // hier connect de mqtt broker de while loop houd in dat hij het blijft proberen tot hij verbinding heeft
   while (!MQTTconnected) {
     if (!mqttClient.connect(MQTTURL, MQTTPort))
       delay(1000);
@@ -64,6 +64,10 @@ void loop() {
   delayMicroseconds(10);
   digitalWrite(TRIGPIN, LOW);
   float distance = pulseIn(ECHOPIN, HIGH) / 58.0;
+
+  mqttClient.beginMessage("eelke/altitude",true,0); // naam van de data, retention flag true geeft aan dat hij de laatste waarde onthoud, zekerheid van aankomen data
+  mqttClient.print(distance); // versturen van ontvangen data
+  mqttClient.endMessage(); // einde bericht
 
   Serial.println(distance);
 
