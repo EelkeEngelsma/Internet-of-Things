@@ -25,13 +25,18 @@ void setup() {
   lcd.backlight();
   lcd.setCursor(0, 0);
   lcd.print("Starting...");
+  delay(1500);
 
 
   for (int i = 0; i < NUM_LEDS; i++) {
     pinMode(ledPins[i], OUTPUT);
   }
 
-  Serial.println("WiFi startup");
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Connecting WiFi");
+  Serial.println("Connecting WiFi");
+  delay(1500);
   
   while (WiFi.begin(ssid, password) != WL_CONNECTED) // wifi ssid en wachtwoord ingeven verbinden met wifi
   {
@@ -39,11 +44,19 @@ void setup() {
     delay(1000);
   }
   
-Serial.println("WiFi startup done");
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Connected!");
+  Serial.println("Connecting WiFi done");
+  delay(1500);
 
   mqttClient.setUsernamePassword(MQTTUsername, MQTTPassword); // mqtt wachtwoord en username geven
 
-Serial.println("MQTT Connecting");
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Connecting MQTT");
+  Serial.println("MQTT Connecting");
+  delay(1500);
 
   bool MQTTconnected = false; // hier connect de mqtt broker de while loop houd in dat hij het blijft proberen tot hij verbinding heeft
   while (!MQTTconnected) {
@@ -55,8 +68,11 @@ Serial.println("MQTT Connecting");
     else
       MQTTconnected = true;
   }
-
-Serial.println("Done connecting");
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Connected!");
+  Serial.println("Connecting MQTT done");
+  delay(1500);
 
   mqttClient.onMessage(onMqttMessage);
   mqttClient.subscribe("Freark/outside/temperature"); // subscriben op de temp
